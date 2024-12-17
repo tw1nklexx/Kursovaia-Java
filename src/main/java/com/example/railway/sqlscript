@@ -1,0 +1,48 @@
+-- Создание базы данных, если она не существует
+CREATE DATABASE IF NOT EXISTS railway CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Использование базы данных
+USE railway;
+
+-- Создание таблицы ролей
+CREATE TABLE IF NOT EXISTS roles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Создание таблицы пользователей
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Создание таблицы связи пользователей и ролей (Many-to-Many)
+CREATE TABLE IF NOT EXISTS users_roles (
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+);
+
+-- Создание таблицы поездов
+CREATE TABLE IF NOT EXISTS trains (
+    train_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    train_number VARCHAR(255) NOT NULL UNIQUE,
+    departure_station VARCHAR(255) NOT NULL,
+    arrival_station VARCHAR(255) NOT NULL,
+    departure_date_time DATETIME NOT NULL,
+    arrival_date_time DATETIME NOT NULL
+);
+
+-- Создание таблицы пассажиров
+CREATE TABLE IF NOT EXISTS passengers (
+    passenger_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    contact_info VARCHAR(255),
+    train_id BIGINT NOT NULL,
+    FOREIGN KEY (train_id) REFERENCES trains(train_id) ON DELETE CASCADE
+);

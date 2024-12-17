@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание поездов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #d52b1e;
+        }
+        .btn-success, .btn-primary, .btn-secondary, .btn-info, .btn-danger {
+            border-radius: 30px; /* Закругленные кнопки */
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #ffffff;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-primary {
+            background-color: #d52b1e;
+            border-color: #d52b1e;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #b22419;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #ffffff;
+        }
+        .btn-info {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #ffffff;
+        }
+        .btn-info:hover {
+            background-color: #218838;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: center; /* Центрирование формы */
+            align-items: center;
+            gap: 10px; /* Небольшое расстояние между кнопками */
+            margin-bottom: 20px; /* Отступ между формой и остальным контентом */
+            max-width: 600px; /* Установленная ширина формы */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group input, .form-group select {
+            flex: 1; /* Автоматическая ширина для текстового ввода */
+            max-width: 600px; /* Одинаковая ширина строк поиска и фильтра */
+        }
+        .form-group button {
+            white-space: nowrap; /* Чтобы текст не переносился на кнопках */
+            border-radius: 0; /* Прямоугольные кнопки для "Поиск", "Фильтр" и "Сбросить" */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Главная страница</a>
+        <div class="d-flex">
+            <a class="btn btn-outline-light" th:href="@{/}">Вернуться на главную</a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h1 class="text-center">Расписание поездов</h1>
+
+    <!-- Форма поиска -->
+    <form method="get" action="/trains" class="text-center mt-4">
+        <div class="input-group mb-3 form-group">
+            <input type="text" name="keyword" class="form-control" placeholder="Поиск...">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+            <button type="button" class="btn btn-secondary" onclick="clearSearch()">Сбросить</button>
+        </div>
+    </form>
+
+    <!-- Форма фильтрации -->
+    <form method="get" action="/trains" class="text-center mt-4">
+        <div class="input-group mb-3 form-group">
+            <select name="arrivalStation" class="form-select">
+                <option value="">Выберите станцию прибытия</option>
+                <option th:each="station : ${arrivalStations}" th:value="${station}" th:text="${station}"></option>
+            </select>
+            <button type="submit" class="btn btn-primary">Фильтр</button>
+            <button type="button" class="btn btn-secondary" onclick="clearFilter()">Сбросить</button>
+        </div>
+    </form>
+
+    <!-- Кнопки управления -->
+    <div class="action-buttons">
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <a href="/admin/trains/new" class="btn btn-success">Добавить поезд</a>
+        </div>
+        <a class="btn btn-secondary" href="/">Назад</a>
+    </div>
+
+    <!-- Таблица поездов -->
+    <table class="table mt-4">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Номер поезда</th>
+            <th>Дата и время отправления</th>
+            <th>Дата и время прибытия</th>
+            <th>Станция отправления</th>
+            <th>Станция прибытия</th>
+            <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="train : ${listTrains}">
+            <td th:text="${train.trainId}">ID</td>
+            <td th:text="${train.trainNumber}">Номер поезда</td>
+            <td th:text="${train.departureDateTime}">Дата и время отправления</td>
+            <td th:text="${train.arrivalDateTime}">Дата и время прибытия</td>
+            <td th:text="${train.departureStation}">Станция отправления</td>
+            <td th:text="${train.arrivalStation}">Станция прибытия</td>
+            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{'/admin/trains/'+${train.trainId}}" class="btn btn-info btn-sm">Редактировать</a>
+                <button class="btn btn-danger btn-sm"
+                        th:data-train-id="${train.trainId}"
+                        onclick="deleteTrain(this)">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function clearSearch() {
+        document.querySelector('input[name="keyword"]').value = '';
+        document.querySelector('form').submit();
+    }
+
+    function clearFilter() {
+        document.querySelector('select[name="arrivalStation"]').value = '';
+        document.querySelector('form').submit();
+    }
+
+    function deleteTrain(button) {
+        const trainId = button.getAttribute('data-train-id');
+        if (confirm('Вы уверены, что хотите удалить этот поезд?')) {
+            fetch(`/api/trains/${trainId}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Ошибка при удалении поезда');
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

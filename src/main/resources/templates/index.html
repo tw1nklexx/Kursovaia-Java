@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Железнодорожный вокзал</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Светло-серый фон */
+            font-family: 'Arial', sans-serif;
+        }
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+        .welcome-text {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .header-text {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #d52b1e; /* Красный цвет РЖД */
+        }
+        .btn-primary, .btn-info, .btn-danger, .btn-outline-light {
+            border-radius: 30px; /* Округленные кнопки */
+        }
+        .btn-red {
+            background-color: #d52b1e;
+            color: white;
+            border: none;
+        }
+        .btn-red:hover {
+            background-color: #b0251a;
+        }
+        .btn-success {
+            background-color: #28a745; /* Зеленый цвет для кнопки Войти */
+            color: white;
+            border-radius: 30px;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .image-container img {
+            max-width: 80%;
+            height: auto;
+            margin: 20px 0; /* Отступы сверху и снизу */
+            border-radius: 15px; /* Округление изображения */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+        }
+        .navbar .d-flex > *:not(:last-child) {
+            margin-right: 10px; /* Отступ между кнопками */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            Главная страница
+        </a>
+        <div class="d-flex">
+            <a th:if="${isAdmin}" th:href="@{/admin/users}" class="btn btn-outline-light">Управление пользователями</a>
+            <a th:if="${!isAnonymousUser}" th:href="@{/logout}" class="btn btn-outline-light">Выйти</a>
+            <a th:if="${isAnonymousUser}" th:href="@{/login}" class="btn btn-success">Войти</a> <!-- Зеленая кнопка -->
+            <a th:if="${isAnonymousUser}" th:href="@{/register}" class="btn btn-danger">Регистрация</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="header-text">Информационно-справочная система железнодорожного вокзала</h1>
+</div>
+<div class="container welcome-container">
+    <div class="image-container">
+        <!-- Укажите путь к изображению -->
+        <img src="/images/railway-station.jpg" alt="Железнодорожный вокзал">
+    </div>
+    <div th:if="${isAdmin}">
+        <p class="welcome-text">Добро пожаловать в систему управления данными железнодорожного вокзала!</p>
+        <p class="welcome-text">Здесь вы можете управлять данными поездов и пассажиров, а также просматривать статистику.</p>
+        <div class="button-container">
+            <a class="btn btn-red" href="/trains">Управление расписанием поездов</a>
+            <a class="btn btn-red" href="admin/passengers">Управление пассажирами</a>
+            <a class="btn btn-red" href="admin/statistics">Статистика</a>
+            <a class="btn btn-red" href="/about_author">Об авторе</a>
+        </div>
+    </div>
+    <div th:if="${!isAnonymousUser && !isAdmin}">
+        <p class="welcome-text">Добро пожаловать в информационно-справочную систему железнодорожного вокзала!</p>
+        <p class="welcome-text">Здесь вы можете просматривать информацию по поездам и пассажирам, а также статистику.</p>
+        <div class="button-container">
+            <a class="btn btn-red" href="/trains">Расписание поездов</a>
+            <a class="btn btn-red" href="/user">Личный кабинет</a>
+            <a class="btn btn-red" href="/about_author">Об авторе</a>
+        </div>
+    </div>
+    <div th:if="${isAnonymousUser}">
+        <p class="welcome-text">Авторизуйтесь, чтобы получить доступ к системе!</p>
+        <p class="welcome-text">После авторизации вы сможете просматривать расписание поездов, информацию о пассажирах и другую важную информацию.</p>
+        <p class="welcome-text">Зарегистрируйтесь, если у вас еще нет учетной записи.</p>
+    </div>
+</div>
+</body>
+</html>

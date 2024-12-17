@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Об авторе</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Светло-серый фон */
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background-color: #ffffff; /* Белый фон */
+            border-radius: 15px; /* Округленные углы */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+            padding: 20px;
+        }
+        h1 {
+            color: #d52b1e; /* Красный цвет РЖД */
+        }
+        p {
+            color: #333333; /* Темный текст */
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Серый цвет */
+            border-color: #6c757d;
+            color: #ffffff;
+            border-radius: 30px; /* Округленные кнопки */
+            padding: 10px 20px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Темно-серый при наведении */
+            border-color: #5a6268;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Главная страница</a>
+        <div class="d-flex">
+            <a th:href="@{/}" class="btn btn-outline-light">Вернуться на главную</a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h1 class="text-center">Об авторе</h1>
+    <p><strong>ФИО:</strong> Воронов Никита Сергеевич</p>
+    <p><strong>Группа/Учебное заведение:</strong> ПИ22-2В, Финансовый Университет при Правительстве РФ</p>
+    <p><strong>Контактные данные:</strong> 222747@edu.fa.ru</p>
+    <p><strong>Опыт работы с технологиями:</strong> Работаю с Java, Spring и Thymeleaf с сентября 2024 года. Реализовывал небольшие проекты в рамках курса "Современные технологии программирования".</p>
+    <p><strong>Дата начала:</strong> 01.10.2024</p>
+    <p><strong>Дата завершения:</strong> 15.12.2024</p>
+    <div class="text-center mt-4">
+        <a class="btn btn-secondary" href="/">Назад</a>
+    </div>
+</div>
+</body>
+</html>
